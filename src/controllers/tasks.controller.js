@@ -20,17 +20,7 @@ function listTasks(_req, res, next) {
 
 function getTaskById(req, res, next) {
   try {
-    const taskId = Number(req.params.id);
-    const task = tasksService.getTaskById(taskId);
-
-    if (!task) {
-      res.status(404).json({
-        error: "TaskNotFound",
-        message: "Task not found",
-      });
-      return;
-    }
-
+    const task = tasksService.getTaskById(req.params.id);
     res.status(200).json(task);
   } catch (error) {
     next(error);
@@ -39,17 +29,7 @@ function getTaskById(req, res, next) {
 
 function updateTask(req, res, next) {
   try {
-    const taskId = Number(req.params.id);
-    const task = tasksService.updateTask(taskId, req.body || {});
-
-    if (!task) {
-      res.status(404).json({
-        error: "TaskNotFound",
-        message: "Task not found",
-      });
-      return;
-    }
-
+    const task = tasksService.updateTask(req.params.id, req.body || {});
     res.status(200).json(task);
   } catch (error) {
     next(error);
@@ -58,17 +38,7 @@ function updateTask(req, res, next) {
 
 function completeTask(req, res, next) {
   try {
-    const taskId = Number(req.params.id);
-    const task = tasksService.completeTask(taskId);
-
-    if (!task) {
-      res.status(404).json({
-        error: "TaskNotFound",
-        message: "Task not found",
-      });
-      return;
-    }
-
+    const task = tasksService.completeTask(req.params.id);
     res.status(200).json(task);
   } catch (error) {
     next(error);
@@ -77,17 +47,7 @@ function completeTask(req, res, next) {
 
 function deleteTask(req, res, next) {
   try {
-    const taskId = Number(req.params.id);
-    const task = tasksService.deleteTask(taskId);
-
-    if (!task) {
-      res.status(404).json({
-        error: "TaskNotFound",
-        message: "Task not found",
-      });
-      return;
-    }
-
+    tasksService.deleteTask(req.params.id);
     res.status(204).send();
   } catch (error) {
     next(error);
