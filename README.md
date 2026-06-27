@@ -1,103 +1,116 @@
-# Backend-PruebaCertika
+# Backend - Prueba Certika
 
-API REST básica para gestión de tareas usando Node.js y Express, con almacenamiento en memoria.
+API REST para gestionar tareas (CRUD) con Node.js + Express.
+La persistencia es en memoria, asi que los datos se reinician cuando el servicio se vuelve a levantar.
 
-## Requisitos
+## Enlaces utiles
 
-- Node.js 18+ (recomendado)
+- API en produccion (Render): `https://backend-pruebacertika.onrender.com`
+- Healthcheck: `https://backend-pruebacertika.onrender.com/health`
+- Swagger UI: `https://backend-pruebacertika.onrender.com/docs`
+- Base de endpoints: `https://backend-pruebacertika.onrender.com/api/tasks`
+- Frontend que consume esta API: `https://frontend-prueba-certika.vercel.app`
+
+## Que incluye este backend
+
+- CRUD completo de tareas.
+- Validaciones basicas para `title` y `status`.
+- Endpoint de salud (`/health`).
+- Documentacion Swagger para probar endpoints desde navegador.
+
+## Correr el proyecto en local
+
+### Requisitos
+
+- Node.js 18 o superior
 - npm
 
-## Instalación
-
-1. Clonar el repositorio.
-2. Instalar dependencias:
+### Instalacion
 
 ```bash
 npm install
 ```
 
-## Variables de entorno
+### Variables de entorno
 
-1. Crear un archivo `.env` en la raíz del proyecto tomando como base `.env.example`.
-2. Variables disponibles:
-   - `PORT`: puerto del servidor (por defecto `3000`)
-   - `CORS_ORIGIN`: origen permitido por CORS (por defecto `*`)
+Crea un archivo `.env` tomando como base `.env.example`.
 
-Ejemplo:
+Ejemplo local:
 
 ```env
 PORT=3000
 CORS_ORIGIN=*
 ```
 
-## Ejecución
+### Levantar servidor
 
-- Desarrollo (con recarga):
+Modo desarrollo (con recarga):
 
 ```bash
 npm run dev
 ```
 
-- Producción:
+Modo produccion:
 
 ```bash
 npm start
 ```
 
-Servidor base: `http://localhost:3000`
+Cuando esta corriendo local:
 
-## Pruebas
+- API: `http://localhost:3000`
+- Swagger: `http://localhost:3000/docs`
 
-Ejecutar la suite de pruebas unitarias:
+## Configuracion recomendada en Render (informativa)
+
+Esta seccion es solo de referencia para despliegue en cuenta propia.
+
+En produccion, usa:
+
+```env
+CORS_ORIGIN=https://frontend-prueba-certika.vercel.app
+```
+
+`PORT` normalmente lo asigna Render automaticamente.
+
+## Endpoints principales
+
+Prefijo: `/api/tasks`
+
+- `POST /api/tasks` crea una tarea.
+- `GET /api/tasks` lista tareas.
+- `GET /api/tasks/:id` obtiene una tarea por id.
+- `PATCH /api/tasks/:id` actualiza titulo/estado.
+- `PATCH /api/tasks/:id/complete` marca tarea como completada.
+- `DELETE /api/tasks/:id` elimina tarea.
+- `GET /health` revisa estado del servicio.
+
+## Tests
 
 ```bash
 npm test
 ```
 
-Alcance actual:
+Actualmente cubre logica de la capa `service`, con repositorio mockeado.
 
-- Pruebas unitarias de la capa `service`.
-- El repositorio se mockea para validar la logica de negocio sin depender del almacenamiento en memoria.
+## Evidencias (capturas)
 
-## Swagger
+Coloca estas imagenes en `docs/evidencias/`:
 
-La documentacion OpenAPI esta disponible en:
+- `pruebaUnitaria.png`
+- `Swagger.png`
 
-- `http://localhost:3000/docs`
+### Pruebas unitarias
 
-Inicia el servidor (`npm run dev` o `npm start`) y abre esa URL para navegar y probar los endpoints desde Swagger UI.
+![Resultado de pruebas unitarias](./docs/evidencias/pruebaUnitaria.png)
 
-## Endpoints
+### Swagger UI
 
-Prefijo de tareas: `/api/tasks`
+![Swagger UI en produccion](./docs/evidencias/Swagger.png)
 
-- `POST /api/tasks` - Crear tarea.
-  - Body: `{ "title": "Mi tarea", "status": "pending" }`
-  - `title` es obligatorio.
-  - `status` es opcional (`pending` o `completed`).
+## Checklist rapido antes de entregar
 
-- `GET /api/tasks` - Listar tareas.
-
-- `GET /api/tasks/:id` - Obtener tarea por ID.
-
-- `PUT /api/tasks/:id` - Actualizar tarea completa.
-  - Body: `{ "title": "Nuevo titulo", "status": "completed" }`
-  - `title` es obligatorio.
-
-- `PATCH /api/tasks/:id` - Actualizar tarea (misma validación que `PUT`).
-
-- `PATCH /api/tasks/:id/complete` - Marcar tarea como completada.
-
-- `DELETE /api/tasks/:id` - Eliminar tarea.
-
-Endpoint adicional:
-
-- `GET /health` - Verificar estado del servicio.
-
-## Respuestas y errores básicos
-
-- `201` al crear correctamente.
-- `200` en lecturas y actualizaciones.
-- `204` al eliminar correctamente.
-- `400` para entradas inválidas (por ejemplo, `title` vacío, `status` inválido o ID inválido).
-- `404` cuando la tarea no existe.
+1. **Healthcheck del backend**: abrir `https://backend-pruebacertika.onrender.com/health` y confirmar respuesta `ok`.
+2. **Documentacion y pruebas de API (Swagger UI)**: abrir `https://backend-pruebacertika.onrender.com/docs` para visualizar y probar endpoints.
+3. **Pruebas CRUD desde Swagger**: ejecutar `POST`, `GET`, `PATCH` y `DELETE` sobre `/api/tasks` y validar respuestas correctas.
+4. **Prueba funcional end-to-end (CRUD)**: validar desde el frontend desplegado crear, editar, completar y eliminar tareas.
