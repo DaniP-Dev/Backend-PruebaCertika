@@ -46,6 +46,27 @@ npm start
 
 Servidor base: `http://localhost:3000`
 
+## Pruebas
+
+Ejecutar la suite de pruebas unitarias:
+
+```bash
+npm test
+```
+
+Alcance actual:
+
+- Pruebas unitarias de la capa `service`.
+- El repositorio se mockea para validar la logica de negocio sin depender del almacenamiento en memoria.
+
+## Swagger
+
+La documentacion OpenAPI esta disponible en:
+
+- `http://localhost:3000/docs`
+
+Inicia el servidor (`npm run dev` o `npm start`) y abre esa URL para navegar y probar los endpoints desde Swagger UI.
+
 ## Endpoints
 
 Prefijo de tareas: `/api/tasks`

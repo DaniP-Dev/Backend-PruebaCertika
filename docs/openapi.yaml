@@ -1,0 +1,236 @@
+openapi: 3.0.3
+info:
+  title: Backend PruebaCertika API
+  version: 1.0.0
+  description: API REST para gestion de tareas en memoria.
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: Health
+  - name: Tasks
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Verifica estado del servicio
+      responses:
+        "200":
+          description: Servicio operativo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+  /api/tasks:
+    get:
+      tags: [Tasks]
+      summary: Lista todas las tareas
+      responses:
+        "200":
+          description: Lista de tareas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      tags: [Tasks]
+      summary: Crea una tarea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTaskRequest"
+      responses:
+        "201":
+          description: Tarea creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/tasks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID numerico positivo de la tarea
+        schema:
+          type: integer
+          minimum: 1
+    get:
+      tags: [Tasks]
+      summary: Obtiene una tarea por ID
+      responses:
+        "200":
+          description: Tarea encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags: [Tasks]
+      summary: Actualiza una tarea completa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTaskRequest"
+      responses:
+        "200":
+          description: Tarea actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      tags: [Tasks]
+      summary: Actualiza una tarea (misma validacion que PUT)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTaskRequest"
+      responses:
+        "200":
+          description: Tarea actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags: [Tasks]
+      summary: Elimina una tarea
+      responses:
+        "204":
+          description: Tarea eliminada
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/tasks/{id}/complete:
+    patch:
+      tags: [Tasks]
+      summary: Marca una tarea como completada
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID numerico positivo de la tarea
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Tarea marcada como completada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+components:
+  responses:
+    BadRequest:
+      description: Solicitud invalida
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            invalidTitle:
+              value:
+                error: InvalidTitle
+                message: Title is required
+            invalidStatus:
+              value:
+                error: InvalidStatus
+                message: Status must be pending or completed
+            invalidTaskId:
+              value:
+                error: InvalidTaskId
+                message: Task id must be a positive integer
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            taskNotFound:
+              value:
+                error: TaskNotFound
+                message: Task not found
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          example: ok
+    Task:
+      type: object
+      required: [id, title, status]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          example: 1
+        title:
+          type: string
+          example: Comprar pan
+        status:
+          type: string
+          enum: [pending, completed]
+          example: pending
+    CreateTaskRequest:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          example: Comprar pan
+        status:
+          type: string
+          enum: [pending, completed]
+          example: pending
+    UpdateTaskRequest:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          example: Comprar pan integral
+        status:
+          type: string
+          enum: [pending, completed]
+          example: completed
+    ErrorResponse:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+          example: InvalidTitle
+        message:
+          type: string
+          example: Title is required
